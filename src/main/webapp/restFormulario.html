@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Start Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+            <!-- Brand -->
+            <a class="navbar-brand" href="index.html">Viajes Bosco</a>
+
+            <!-- Toggler/collapsibe Button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar links -->
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="ServletDestinos?op=listar">Listar</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="ServletDestinos?op=insert1">Insertar</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="restFormulario">Probar REST</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        <div class="container">
+            <h1>Prueba REST</h1>
+            ID:<input type="text" id="buscaId" name="buscaId" class="form-control">
+            <button class="btn btn-primary" id="btnAddArticle2" onclick="buscaDestino()">Buscar</button>
+             <button class="btn btn-primary" id="btnAddArticle2" onclick="borrarDestino()">Borrar</button>
+            <h1>Crear Destino</h1>
+            <form id="frmCrear" method="post" action="#">
+                Id: <input class="form-control" type="text" id="id" name="id"><br>
+                Ciudad: <input class="form-control" type="text" id="ciudad" name="ciudad">
+                Imagen: <input class="form-control" type="text" id="imagen" name="imagen">
+                Precio: <input class="form-control" type="text" id="precio" name="precio">
+                <button class="btn btn-primary" id="btnAddArticle" onclick="agregaDestino()">Crear</button>
+                <button class="btn btn-primary" id="btnAddArticle1" onclick="actualizaDestino()()">Actualizar</button>
+            </form>
+        </div>
+
+        <script>
+            
+            function buscaDestino(){
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                       // Typical action to be performed when the document is ready:
+                       let destino = JSON.parse(xhttp.responseText);
+                       document.getElementById("ciudad").value = destino.ciudad;
+                       document.getElementById("id").value = destino.id;
+                       document.getElementById("imagen").value = destino.imagen;
+                       document.getElementById("precio").value = destino.precio;
+                   }
+                };
+                xhttp.open("GET", "http://localhost:8080/viajesCRUD/webresources/rest/destino/"+document.getElementById("buscaId").value, true);
+                xhttp.send();
+            }
+            
+            function agregaDestino(){
+                var url="http://localhost:8080/viajesCRUD/webresources/rest/destino/";
+                method="post";
+                data = {ciudad: document.getElementById("ciudad").value,
+                        imagen: document.getElementById("imagen").value,
+                        precio: parseFloat(document.getElementById("precio").value)};
+                var xhr = new XMLHttpRequest();
+                xhr.open(method,url,true);
+                xhr.setRequestHeader('Content-Type','application/json;charset="utf-8"');
+                xhr.send(JSON.stringify(data));
+                
+            };
+            
+            function actualizaDestino(){
+                var url="http://localhost:8080/viajesCRUD/webresources/rest/destino/";
+                method="put";
+                data = {id:parseInt(document.getElementById("id").value),
+                        ciudad: document.getElementById("ciudad").value,
+                        imagen: document.getElementById("imagen").value,
+                        precio: parseFloat(document.getElementById("precio").value)};
+                var xhr = new XMLHttpRequest();
+                xhr.open(method,url,true);
+                xhr.setRequestHeader('Content-Type','application/json;charset="utf-8"');
+                xhr.send(JSON.stringify(data));
+                
+            };
+            
+            function borrarDestino(){
+                var url="http://localhost:8080/viajesCRUD/webresources/rest/destino/";
+                method="delete";
+                var xhr = new XMLHttpRequest();
+                xhr.open(method,url+document.getElementById("buscaId").value,true);
+                xhr.send();
+            }
+        </script>
+    </body>
+</html>
